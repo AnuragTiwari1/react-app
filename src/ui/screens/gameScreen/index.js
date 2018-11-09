@@ -4,6 +4,7 @@ import * as Styles from './styles'
 import Roulette from 'react-native-casino-roulette';
 import wheel from '../../../../assets/wheel.png';
 import marker from '../../../../assets/marker.png';
+import firebase from 'react-native-firebase'
 export default class AppScreen extends React.Component{
   constructor(props){
     super(props)
@@ -13,6 +14,8 @@ export default class AppScreen extends React.Component{
       option:"Option selected:",
       rouletteState:'stop'
     }
+    firebase.admob().initialize('ca-app-pub-3940256099942544/1033173712');
+    this.showAd=this.showAd.bind(this);
   }
   static navigationOptions = () => ({
     header:null
@@ -68,6 +71,33 @@ export default class AppScreen extends React.Component{
     this.setState({
       option:option.index
     })
+    this.showAd();
+  }
+
+  showAd(){
+    const advert = firebase.admob().interstitial('ca-app-pub-3940256099942544/1033173712');
+
+    const AdRequest = firebase.admob.AdRequest;
+    const request = new AdRequest();
+   // request.addKeyword('foo').addKeyword('bar');
+
+// Load the advert with our AdRequest
+    advert.loadAd(request.build());
+
+    advert.on('onAdLoaded', () => {
+      console.log('Ad is loaded');
+      setTimeout(() => {
+        if (advert.isLoaded()) {
+          console.log('will show add');
+          advert.show();
+        } else {
+          console.log("advert.isLoaded() returend false");
+        }
+      }, 2500);
+    });
+//     console.log("entering setTimeout");
+// // Simulate the interstitial being shown "sometime" later during the apps lifecycle
+
   }
 
 }

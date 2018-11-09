@@ -9,7 +9,7 @@ const RootStack =createStackNavigator(
     Game:GameScreen
   },
   {
-    initialRouteName: 'Game',
+    initialRouteName: 'Home',
   }
 )
 
