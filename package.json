@@ -24,6 +24,7 @@
   "dependencies": {
     "react": "^16.6.1",
     "react-native": "0.57.1",
+    "react-native-casino-roulette": "^1.6.0",
     "react-native-firebase": "^5.1.0",
     "react-native-responsive-fontsize": "^0.1.2",
     "react-navigation": "^2.18.2",
