@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Button, Text, TextInput, Image } from 'react-native';
 
 import firebase from 'react-native-firebase';
+import {connect} from "react-redux";
 
 const successImageUri = 'https://cdn.pixabay.com/photo/2015/06/09/16/12/icon-803718_1280.png';
 
@@ -42,6 +43,7 @@ export default class PhoneAuthTest extends Component {
   signIn = () => {
     const { phoneNumber } = this.state;
     this.setState({ message: 'Sending code ...' });
+    //this.props.setPhone(phoneNumber);
 
     firebase.auth().signInWithPhoneNumber(phoneNumber)
       .then(confirmResult => this.setState({ confirmResult, message: 'Code has been sent!' }))
@@ -49,7 +51,7 @@ export default class PhoneAuthTest extends Component {
   };
 
   confirmCode = () => {
-    const { codeInput, confirmResult } = this.state;
+    const { codeInput, confirmResult,phoneNumber } = this.state;
 
     if (confirmResult && codeInput.length) {
       confirmResult.confirm(codeInput)
@@ -69,13 +71,14 @@ export default class PhoneAuthTest extends Component {
 
     return (
       <View style={{ padding: 25 }}>
-        <Text>Enter phone number:</Text>
+        <Text>Enter phone number linked to Paytm:</Text>
         <TextInput
           autoFocus
           style={{ height: 40, marginTop: 15, marginBottom: 15 }}
           onChangeText={value => this.setState({ phoneNumber: value })}
           placeholder={'Phone number ... '}
           value={phoneNumber}
+          keyboardType={"numeric"}
         />
         <Button title="Sign In" color="green" onPress={this.signIn} />
       </View>
@@ -104,6 +107,7 @@ export default class PhoneAuthTest extends Component {
           onChangeText={value => this.setState({ codeInput: value })}
           placeholder={'Code ... '}
           value={codeInput}
+          keyboardType={"numeric"}
         />
         <Button title="Confirm Code" color="#841584" onPress={this.confirmCode} />
       </View>
@@ -121,8 +125,9 @@ export default class PhoneAuthTest extends Component {
 
         {!user && confirmResult && this.renderVerificationCodeInput()}
 
-        {user && this.props.navigation.navigate("AppScreen")}
+        {user && this.props.navigation.navigate("AppScreen",{'user':user,'confirmResult':confirmResult})}
       </View>
     );
   }
 }
+

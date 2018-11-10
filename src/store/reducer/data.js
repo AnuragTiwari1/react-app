@@ -1,5 +1,5 @@
 const initialState = {
-  id:-1,
+  phone:'+919607155846'
 };
 
 const data = (state = initialState, action) => {

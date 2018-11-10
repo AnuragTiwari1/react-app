@@ -1,14 +1,24 @@
 const initialState = {
-  id:-1,
+  phoneNumber:'+919607155846',
+  rewardPoints:0,
+  points:0,
 };
 
 const user = (state = initialState, action) => {
   switch (action.type) {
-    case "LOGIN":
+    case "SETPHONE":
       return {
         ...state,
-        id: action.payload
+        phoneNumber: action.payload
       };
+
+    case "SETPOINT":
+    console.log("setphone is called with payload",action.payload);
+      return {
+        ...state,
+        points: action.payload
+      };
+
     default:
       return state;
   }

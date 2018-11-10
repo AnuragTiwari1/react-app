@@ -1,25 +1,40 @@
 import React from 'react'
-import {View,Text,TouchableOpacity,Image} from 'react-native'
+import {View,Text,Modal} from 'react-native'
 import * as Styles from './styles'
 import Roulette from 'react-native-casino-roulette';
 import wheel from '../../../../assets/wheel.png';
 import marker from '../../../../assets/marker.png';
 import firebase from 'react-native-firebase'
-export default class AppScreen extends React.Component{
+import Loader from "../../reusableComponent/Loader";
+import {connect} from "react-redux";
+import NextTitle from "../../reusableComponent/NextTitle";
+class AppScreen extends React.Component{
   constructor(props){
     super(props)
     this.onRotate = this.onRotate.bind(this);
     this.onRotateChange = this.onRotateChange.bind(this);
     this.state={
-      option:"Option selected:",
-      rouletteState:'stop'
+      option:undefined,
+      rouletteState:'stop',
+      modalVisible: false
     }
     firebase.admob().initialize('ca-app-pub-3940256099942544/1033173712');
     this.showAd=this.showAd.bind(this);
+    this._reedem=this._reedem.bind(this);
   }
   static navigationOptions = () => ({
     header:null
   });
+
+  componentWillMount(){
+    const {setPoint} = this.props
+    firebase
+      .database()
+      .ref('/users/'+`${this.props.phone}`+'/points')
+      .on("value",function (snapshot) {
+        setPoint(snapshot.val());
+      })
+  }
 
 
   render(){
@@ -35,10 +50,7 @@ export default class AppScreen extends React.Component{
     return(
       <Container>
         <Text>
-          {`Option selected: ${option}`}
-        </Text>
-        <Text>
-          {`Roulette state: ${rouletteState}`}
+          {`points: ${this.props.points}`}
         </Text>
         <Roulette
           enableUserRotate={rouletteState=='stop'}
@@ -49,55 +61,74 @@ export default class AppScreen extends React.Component{
           options={options}
           markerWidth={20} >
         </Roulette>
-
-        <TouchableOpacity
-          style={{width:70,height:30,backgroundColor:'green'}}
-          onPress={()=> console.log("spin is pressed")}
+        <Loader showLoader={this.state.modalVisible}/>
+        <NextTitle
+          disabled={this.props.points>10000 ? false :true}
+          nextClicked={()=>this._reedem()}
         >
-          <Text>SPIN</Text>
-        </TouchableOpacity>
+          Reedem Now
+        </NextTitle>
       </Container>
     )
+  }
+
+  _reedem(){
+    firebase
+      .database()
+      .ref('/users/'+`${this.props.phone}`)
+      .update({
+        points:0
+      })
   }
 
   onRotateChange(state) {
     this.setState({
       rouletteState: state
     })
+    if(state=='stop' && this.state.option){
+      let update= parseInt(this.state.option)+parseInt(this.props.points);
+      firebase
+        .database()
+        .ref('/users/'+`${this.props.phone}`)
+        .update({
+          points:update
+        })
+    }
   }
 
   onRotate(option) {
 
     this.setState({
       option:option.index
-    })
+    });
     this.showAd();
   }
 
   showAd(){
     const advert = firebase.admob().interstitial('ca-app-pub-3940256099942544/1033173712');
-
+    this.setState({modalVisible:true})
     const AdRequest = firebase.admob.AdRequest;
     const request = new AdRequest();
-   // request.addKeyword('foo').addKeyword('bar');
-
-// Load the advert with our AdRequest
     advert.loadAd(request.build());
 
     advert.on('onAdLoaded', () => {
-      console.log('Ad is loaded');
-      setTimeout(() => {
-        if (advert.isLoaded()) {
-          console.log('will show add');
-          advert.show();
-        } else {
-          console.log("advert.isLoaded() returend false");
-        }
-      }, 2500);
+      this.setState({modalVisible:false})
+      advert.show();
     });
-//     console.log("entering setTimeout");
-// // Simulate the interstitial being shown "sometime" later during the apps lifecycle
 
   }
 
 }
+
+export default connect(
+  state => ({
+    points: state.USER.points,
+    phone:state.USER.phoneNumber
+  }),
+  dispatch => ({
+    setPoint: point => dispatch({
+      type: "SETPOINT",
+      payload: point
+    })
+  })
+)(AppScreen)
