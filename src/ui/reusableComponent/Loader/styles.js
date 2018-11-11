@@ -23,12 +23,9 @@ const LoaderWrapper = styled.View`
   justify-content: space-around;
 `;
 
-const Text =styled.Text`
-  font-size: ${responsiveFontSize(1.8)};
-  color: #FFFFFF;
-`;
+
 
 const LoaderModal = styled.Modal``;
 const Loader = styled.ActivityIndicator``;
 
-export { LoaderContainer, LoaderModal, ModalBackground, LoaderWrapper, Loader,Text };
+export { LoaderContainer, LoaderModal, ModalBackground, LoaderWrapper, Loader };

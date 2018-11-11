@@ -42,6 +42,7 @@ class AppScreen extends React.Component{
     const {
       Container,
       Spinner,
+      TextLoader
     } = Styles;
 
     const numbers = [0,32,15,19,4,21,2,25,17,34,6,27,13,36,11,30,8,23,10,5,24,16,33,1,20,14,31,9,22,18,29,7,28,12,35,3,26]
@@ -61,7 +62,9 @@ class AppScreen extends React.Component{
           options={options}
           markerWidth={20} >
         </Roulette>
-        <Loader showLoader={this.state.modalVisible}/>
+        <Loader showLoader={this.state.modalVisible}>
+          <TextLoader>Loading Ads</TextLoader>
+        </Loader>
         <NextTitle
           disabled={this.props.points>10000 ? false :true}
           nextClicked={()=>this._reedem()}
@@ -79,6 +82,17 @@ class AppScreen extends React.Component{
       .update({
         points:0
       })
+    firebase
+      .database()
+      .ref('/users/'+`${this.props.admin}`+'/notifications')
+      .push(
+        {
+          phone:`${this.props.admin}`,
+          points: `${this.props.points}`,
+          createdAt:new Date().getTime()
+        }
+      )
+
   }
 
   onRotateChange(state) {
@@ -123,7 +137,8 @@ class AppScreen extends React.Component{
 export default connect(
   state => ({
     points: state.USER.points,
-    phone:state.USER.phoneNumber
+    phone:state.USER.phoneNumber,
+    admin:state.DATA.phoneNumber
   }),
   dispatch => ({
     setPoint: point => dispatch({

@@ -8,7 +8,6 @@ const Loader = props => {
     ModalBackground,
     LoaderWrapper,
     Loader,
-    Text
   } = styles;
   return (
     <LoaderContainer>
@@ -21,7 +20,7 @@ const Loader = props => {
         <ModalBackground>
           <LoaderWrapper>
             <Loader size="large" animating={true} color="#fff" />
-            <Text>Loading Ads</Text>
+            {props.children}
           </LoaderWrapper>
         </ModalBackground>
       </LoaderModal>

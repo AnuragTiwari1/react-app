@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { View, Button, Text, TextInput, Image } from 'react-native';
-
 import firebase from 'react-native-firebase';
-import {connect} from "react-redux";
 
-const successImageUri = 'https://cdn.pixabay.com/photo/2015/06/09/16/12/icon-803718_1280.png';
+import Loader from "../../reusableComponent/Loader";
+
+import * as Styles from './styles'
 
 export default class PhoneAuthTest extends Component {
   constructor(props) {
@@ -16,6 +16,7 @@ export default class PhoneAuthTest extends Component {
       codeInput: '',
       phoneNumber: '+91',
       confirmResult: null,
+      modalVisible: false
     };
   }
 
@@ -31,6 +32,7 @@ export default class PhoneAuthTest extends Component {
           codeInput: '',
           phoneNumber: '+91',
           confirmResult: null,
+          modalVisible: false
         });
       }
     });
@@ -42,12 +44,11 @@ export default class PhoneAuthTest extends Component {
 
   signIn = () => {
     const { phoneNumber } = this.state;
-    this.setState({ message: 'Sending code ...' });
-    //this.props.setPhone(phoneNumber);
+    this.setState({ modalVisible: true });
 
     firebase.auth().signInWithPhoneNumber(phoneNumber)
-      .then(confirmResult => this.setState({ confirmResult, message: 'Code has been sent!' }))
-      .catch(error => this.setState({ message: `Sign In With Phone Number Error: ${error.message}` }));
+      .then(confirmResult => this.setState({ confirmResult, modalVisible: false }))
+      .catch(error => this.setState({ message: `Sign In With Phone Number Error: ${error.message}`, modalVisible: false }));
   };
 
   confirmCode = () => {
@@ -116,9 +117,16 @@ export default class PhoneAuthTest extends Component {
 
   render() {
     const { user, confirmResult } = this.state;
+    const {
+      TextLoader
+    }= Styles;
     return (
       <View style={{ flex: 1 }}>
-
+        <Loader
+          showLoader={this.state.modalVisible}
+        >
+          <TextLoader>Sending code</TextLoader>
+        </Loader>
         {!user && !confirmResult && this.renderPhoneNumberInput()}
 
         {this.renderMessage()}

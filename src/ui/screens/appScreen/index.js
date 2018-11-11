@@ -10,7 +10,6 @@ class AppScreen extends React.Component{
       if(props.navigation.getParam('confirmResult')){
         firebase.database().ref('users/' + props.navigation.getParam('user').phoneNumber).set({
           phone:props.navigation.getParam('user').phoneNumber,
-          points:0
         }, function(error) {
           if (error) {
             // The write failed...
@@ -30,7 +29,7 @@ class AppScreen extends React.Component{
 
 
   render(){
-    const {phone,admin}= this.props
+    const {phone,admin}= this.props;
     return(
       <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
         <TouchableOpacity

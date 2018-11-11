@@ -9,10 +9,11 @@ const RootStack =createStackNavigator(
    Home:Landing,
    AppScreen:AppScreen,
     Game:GameScreen,
-    Accounts:accounts
+    Accounts:accounts,
+    ADMIN:admin
   },
   {
-    initialRouteName: 'Home',
+    initialRouteName: 'AppScreen',
   }
 )
 
