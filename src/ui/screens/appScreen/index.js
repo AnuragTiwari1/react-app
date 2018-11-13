@@ -7,19 +7,28 @@ class AppScreen extends React.Component{
   constructor(props){
     super(props)
     if(props.navigation.getParam('user')){
-      if(props.navigation.getParam('confirmResult')){
-        firebase.database().ref('users/' + props.navigation.getParam('user').phoneNumber).update({
-          phone:props.navigation.getParam('user').phoneNumber,
-        }, function(error) {
-          if (error) {
-            // The write failed...
-          } else {
-            // Data saved successfully!
-          }
-        });
-      }
+      // if(props.navigation.getParam('confirmResult')){
+      //   firebase.database().ref('users/' + props.navigation.getParam('user').phoneNumber).update({
+      //     phone:props.navigation.getParam('user').phoneNumber,
+      //   }, function(error) {
+      //     if (error) {
+      //       // The write failed...
+      //     } else {
+      //       // Data saved successfully!
+      //     }
+      //   });
+      // }
 
       props.setPhone(props.navigation.getParam('user').phoneNumber)
+    }
+  }
+
+  async componentDidMount() {
+    const fcmToken = await firebase.messaging().getToken();
+    if (fcmToken) {
+      console.log("device token>>>>>>>",fcmToken);
+    } else {
+      // user doesn't have a device token yet
     }
   }
 
@@ -44,12 +53,6 @@ class AppScreen extends React.Component{
         >
           <Text>Accounts</Text>
         </TouchableOpacity>
-        {/*{phone==admin && <TouchableOpacity*/}
-          {/*style={{width:70,height:30,backgroundColor:'green'}}*/}
-          {/*onPress={()=> this.props.navigation.navigate("ADMIN")}*/}
-        {/*>*/}
-          {/*<Text>ADMIN</Text>*/}
-        {/*</TouchableOpacity>}*/}
       </View>
     )
   }
@@ -57,7 +60,7 @@ class AppScreen extends React.Component{
 export default connect(
   state =>({
     phone:state.USER.phoneNumber,
-    admin:state.DATA.phoneNumber
+    admin:state.DATA.phoneNumber,
   }),
   dispatch => ({
     setPhone : phoneNumber => dispatch({

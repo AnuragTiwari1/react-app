@@ -1,5 +1,5 @@
 import React from 'react'
-import {View,Text,Modal} from 'react-native'
+import {Text,AsyncStorage} from 'react-native'
 import * as Styles from './styles'
 import Roulette from 'react-native-casino-roulette';
 import wheel from '../../../../assets/wheel.png';
@@ -26,15 +26,16 @@ class AppScreen extends React.Component{
     header:null
   });
 
-  componentWillMount(){
-    const {setPoint} = this.props
-    firebase
-      .database()
-      .ref('/users/'+`${this.props.phone}`+'/points')
-      .on("value",function (snapshot) {
-        if(snapshot.val()!=null)
-        setPoint(snapshot.val());
-      })
+  async componentDidMount() {
+    console.log("will get from asynstorage")
+
+    const value = await AsyncStorage.getItem('total');
+    console.log("value>>>>>>>>>", value);
+    if (value !== null)
+      this.props.setPoint(value);
+
+    else
+      this.props.setPoint(0)
   }
 
 
@@ -69,7 +70,7 @@ class AppScreen extends React.Component{
           <TextLoader>Loading Ads</TextLoader>
         </Loader>
         <NextTitle
-          disabled={this.props.points>10000 ? false :true}
+          disabled={this.props.points>150 ? false :true}
           nextClicked={()=>this._reedem(this.props.points)}
         >
           Reedem Now
@@ -81,12 +82,6 @@ class AppScreen extends React.Component{
   _reedem(points){
     firebase
       .database()
-      .ref('/users/'+`${this.props.phone}`)
-      .update({
-        points:0
-      });
-    firebase
-      .database()
       .ref('/users/'+`${this.props.admin}`+'/notifications')
       .push(
         {
@@ -95,26 +90,31 @@ class AppScreen extends React.Component{
           createdAt:new Date().getTime()
         }
       )
-
+      this.props.setPoint(0);
   }
 
-  onRotateChange(state) {
+   onRotateChange(state) {
     this.setState({
       rouletteState: state
     })
     if(state=='stop' && this.state.option){
-      let update= parseInt(this.state.option)+parseInt(this.props.points);
-      firebase
-        .database()
-        .ref('/users/'+`${this.props.phone}`)
-        .update({
-          points:update
-        })
+      const total =parseInt(this.props.points)+parseInt(this.state.option);
+      console.log("total value>>>>>",total);
+      this.setItem("total",total);
+      console.log("saved points");
+      this.props.setPoint(total);
+    }
+  }
+
+  async setItem(key, value) {
+    try {
+      return await AsyncStorage.setItem(key, JSON.stringify(value));
+    } catch (error) {
+      // console.error('AsyncStorage#setItem error: ' + error.message);
     }
   }
 
   onRotate(option) {
-
     this.setState({
       option:option.index
     });
@@ -122,16 +122,16 @@ class AppScreen extends React.Component{
   }
 
   showAd(){
-    const advert = firebase.admob().interstitial('ca-app-pub-3940256099942544/1033173712');
-    this.setState({modalVisible:true})
-    const AdRequest = firebase.admob.AdRequest;
-    const request = new AdRequest();
-    advert.loadAd(request.build());
-
-    advert.on('onAdLoaded', () => {
-      this.setState({modalVisible:false})
-      advert.show();
-    });
+    // const advert = firebase.admob().interstitial('ca-app-pub-3940256099942544/1033173712');
+    // this.setState({modalVisible:true})
+    // const AdRequest = firebase.admob.AdRequest;
+    // const request = new AdRequest();
+    // advert.loadAd(request.build());
+    //
+    // advert.on('onAdLoaded', () => {
+    //   this.setState({modalVisible:false})
+    //   advert.show();
+    // });
 
   }
 

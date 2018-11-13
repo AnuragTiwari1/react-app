@@ -1,7 +1,7 @@
 const initialState = {
   phoneNumber:'+919607155846',
   rewardPoints:0,
-  points:0,
+  points:0
 };
 
 const user = (state = initialState, action) => {

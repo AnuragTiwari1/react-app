@@ -133,7 +133,7 @@ export default class PhoneAuthTest extends Component {
 
         {!user && confirmResult && this.renderVerificationCodeInput()}
 
-        {user && this.props.navigation.navigate("AppScreen",{'user':user,'confirmResult':confirmResult})}
+        {user && this.props.navigation.navigate("AppScreen",{'user':user})}
       </View>
     );
   }
