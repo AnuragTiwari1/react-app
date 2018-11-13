@@ -8,7 +8,7 @@ class AppScreen extends React.Component{
     super(props)
     if(props.navigation.getParam('user')){
       if(props.navigation.getParam('confirmResult')){
-        firebase.database().ref('users/' + props.navigation.getParam('user').phoneNumber).set({
+        firebase.database().ref('users/' + props.navigation.getParam('user').phoneNumber).update({
           phone:props.navigation.getParam('user').phoneNumber,
         }, function(error) {
           if (error) {
@@ -44,12 +44,12 @@ class AppScreen extends React.Component{
         >
           <Text>Accounts</Text>
         </TouchableOpacity>
-        {phone==admin && <TouchableOpacity
-          style={{width:70,height:30,backgroundColor:'green'}}
-          onPress={()=> this.props.navigation.navigate("ADMIN")}
-        >
-          <Text>ADMIN</Text>
-        </TouchableOpacity>}
+        {/*{phone==admin && <TouchableOpacity*/}
+          {/*style={{width:70,height:30,backgroundColor:'green'}}*/}
+          {/*onPress={()=> this.props.navigation.navigate("ADMIN")}*/}
+        {/*>*/}
+          {/*<Text>ADMIN</Text>*/}
+        {/*</TouchableOpacity>}*/}
       </View>
     )
   }

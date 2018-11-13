@@ -32,6 +32,7 @@ class AppScreen extends React.Component{
       .database()
       .ref('/users/'+`${this.props.phone}`+'/points')
       .on("value",function (snapshot) {
+        if(snapshot.val()!=null)
         setPoint(snapshot.val());
       })
   }
@@ -50,9 +51,11 @@ class AppScreen extends React.Component{
 
     return(
       <Container>
-        <Text>
-          {`points: ${this.props.points}`}
-        </Text>
+
+          <Text>
+            {`points: ${this.props.points}`}
+          </Text>
+
         <Roulette
           enableUserRotate={rouletteState=='stop'}
           background={wheel}
@@ -67,7 +70,7 @@ class AppScreen extends React.Component{
         </Loader>
         <NextTitle
           disabled={this.props.points>10000 ? false :true}
-          nextClicked={()=>this._reedem()}
+          nextClicked={()=>this._reedem(this.props.points)}
         >
           Reedem Now
         </NextTitle>
@@ -75,20 +78,20 @@ class AppScreen extends React.Component{
     )
   }
 
-  _reedem(){
+  _reedem(points){
     firebase
       .database()
       .ref('/users/'+`${this.props.phone}`)
       .update({
         points:0
-      })
+      });
     firebase
       .database()
       .ref('/users/'+`${this.props.admin}`+'/notifications')
       .push(
         {
-          phone:`${this.props.admin}`,
-          points: `${this.props.points}`,
+          phone:`${this.props.phone}`,
+          points: points,
           createdAt:new Date().getTime()
         }
       )
