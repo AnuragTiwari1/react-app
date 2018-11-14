@@ -18,7 +18,7 @@ class AppScreen extends React.Component{
       rouletteState:'stop',
       modalVisible: false
     }
-    firebase.admob().initialize('ca-app-pub-3940256099942544/1033173712');
+    firebase.admob().initialize('ca-app-pub-4832169870094561/5539897910');
     this.showAd=this.showAd.bind(this);
     this._reedem=this._reedem.bind(this);
   }
@@ -122,16 +122,16 @@ class AppScreen extends React.Component{
   }
 
   showAd(){
-    // const advert = firebase.admob().interstitial('ca-app-pub-3940256099942544/1033173712');
-    // this.setState({modalVisible:true})
-    // const AdRequest = firebase.admob.AdRequest;
-    // const request = new AdRequest();
-    // advert.loadAd(request.build());
-    //
-    // advert.on('onAdLoaded', () => {
-    //   this.setState({modalVisible:false})
-    //   advert.show();
-    // });
+    const advert = firebase.admob().interstitial('ca-app-pub-4832169870094561/5539897910');
+    this.setState({modalVisible:true})
+    const AdRequest = firebase.admob.AdRequest;
+    const request = new AdRequest();
+    advert.loadAd(request.build());
+
+    advert.on('onAdLoaded', () => {
+      this.setState({modalVisible:false})
+      advert.show();
+    });
 
   }
 

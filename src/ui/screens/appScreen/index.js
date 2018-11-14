@@ -7,29 +7,22 @@ class AppScreen extends React.Component{
   constructor(props){
     super(props)
     if(props.navigation.getParam('user')){
-      // if(props.navigation.getParam('confirmResult')){
-      //   firebase.database().ref('users/' + props.navigation.getParam('user').phoneNumber).update({
-      //     phone:props.navigation.getParam('user').phoneNumber,
-      //   }, function(error) {
-      //     if (error) {
-      //       // The write failed...
-      //     } else {
-      //       // Data saved successfully!
-      //     }
-      //   });
-      // }
-
       props.setPhone(props.navigation.getParam('user').phoneNumber)
     }
   }
 
-  async componentDidMount() {
-    const fcmToken = await firebase.messaging().getToken();
-    if (fcmToken) {
-      console.log("device token>>>>>>>",fcmToken);
-    } else {
-      // user doesn't have a device token yet
-    }
+
+  async componentWillMount(){
+    let permitted=false;
+    firebase.messaging().hasPermission()
+      .then(enabled => {
+        if (enabled) {
+          console.log("user has permission")
+        } else {
+          console.log("user don't have permission")
+          this.askPermission();
+        }
+    });
   }
 
   static navigationOptions = () => ({
@@ -55,6 +48,15 @@ class AppScreen extends React.Component{
         </TouchableOpacity>
       </View>
     )
+  }
+
+  async askPermission() {
+    try {
+      await firebase.messaging().requestPermission();
+      // User has authorised
+    } catch (error) {
+      // User has rejected permissions
+    }
   }
 }
 export default connect(
