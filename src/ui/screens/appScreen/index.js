@@ -1,5 +1,5 @@
 import React from 'react'
-import {View,Text,TouchableOpacity} from 'react-native'
+import {View,Text,TouchableOpacity,ImageBackground,Image} from 'react-native'
 import connect from "react-redux/es/connect/connect";
 import  firebase from "react-native-firebase";
 class AppScreen extends React.Component{
@@ -33,20 +33,34 @@ class AppScreen extends React.Component{
   render(){
     const {phone,admin}= this.props;
     return(
-      <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
-        <TouchableOpacity
-          style={{width:70,height:30,backgroundColor:'green'}}
-          onPress={()=> this.props.navigation.navigate("Game")}
-        >
-          <Text>Play</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{width:70,height:30,backgroundColor:'green'}}
-          onPress={()=> this.props.navigation.navigate("Accounts")}
-        >
-          <Text>Accounts</Text>
-        </TouchableOpacity>
-      </View>
+      <ImageBackground
+        source={require("../../../../assets/background.jpg")}
+        style={{width:'100%',height:'100%'}}
+      >
+        <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
+          <TouchableOpacity
+            style={{backgroundColor:'#fe4b8d',borderRadius: 22, marginBottom: 50}}
+            onPress={()=> this.props.navigation.navigate("Game")}
+          >
+            <Text
+              style={{fontSize:25,paddingHorizontal: 28, paddingVertical: 10, color :'#FFFFFF', fontWeight: '500'}}
+            >
+              Play
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={{backgroundColor:'#38b2ee',borderRadius: 22}}
+            onPress={()=> this.props.navigation.navigate("Game")}
+          >
+            <Text
+              style={{fontSize:25,paddingHorizontal: 28, paddingVertical: 10, color :'#FFFFFF', fontWeight: '500'}}
+            >
+              FAQ
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </ImageBackground>
     )
   }
 

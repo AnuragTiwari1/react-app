@@ -1,5 +1,5 @@
 import React from 'react'
-import {Text,AsyncStorage} from 'react-native'
+import {Text,AsyncStorage,ImageBackground,View,Image} from 'react-native'
 import * as Styles from './styles'
 import Roulette from 'react-native-casino-roulette';
 import wheel from '../../../../assets/wheel.png';
@@ -51,13 +51,12 @@ class AppScreen extends React.Component{
     const options  = numbers.map((o)=>({index:o}))
 
     return(
-      <Container>
-
-          <Text>
-            {`points: ${this.props.points}`}
-          </Text>
-
-        <Roulette
+      <ImageBackground
+        source={require("../../../../assets/background.jpg")}
+        style={{width:'100%',height:'100%'}}
+      >
+        <Container>
+          <Roulette
           enableUserRotate={rouletteState=='stop'}
           background={wheel}
           onRotate={this.onRotate}
@@ -65,17 +64,27 @@ class AppScreen extends React.Component{
           marker={marker}
           options={options}
           markerWidth={20} >
-        </Roulette>
-        <Loader showLoader={this.state.modalVisible}>
-          <TextLoader>Loading Ads</TextLoader>
-        </Loader>
-        <NextTitle
-          disabled={this.props.points>150 ? false :true}
-          nextClicked={()=>this._reedem(this.props.points)}
-        >
-          Reedem Now
-        </NextTitle>
-      </Container>
+          </Roulette>
+          <Loader showLoader={this.state.modalVisible}>
+            <TextLoader>Loading Ads</TextLoader>
+          </Loader>
+            <NextTitle
+              disabled={this.props.points>150 ? false :true}
+              nextClicked={()=>this._reedem(this.props.points)}
+            >
+              Reedem
+            </NextTitle>
+          <View style={{position:'absolute',top:0,right:0,flexDirection: 'row'}}>
+            <Image
+              source={require('../../../../assets/coins.png')}
+              style={{height:40,width:40}}
+            />
+            <Text style={{fontSize:25, color:'red'}}>
+              {`${this.props.points}`}
+            </Text>
+          </View>
+        </Container>
+      </ImageBackground>
     )
   }
 
@@ -122,16 +131,16 @@ class AppScreen extends React.Component{
   }
 
   showAd(){
-    const advert = firebase.admob().interstitial('ca-app-pub-4832169870094561/5539897910');
-    this.setState({modalVisible:true})
-    const AdRequest = firebase.admob.AdRequest;
-    const request = new AdRequest();
-    advert.loadAd(request.build());
-
-    advert.on('onAdLoaded', () => {
-      this.setState({modalVisible:false})
-      advert.show();
-    });
+    // const advert = firebase.admob().interstitial('ca-app-pub-4832169870094561/5539897910');
+    // this.setState({modalVisible:true})
+    // const AdRequest = firebase.admob.AdRequest;
+    // const request = new AdRequest();
+    // advert.loadAd(request.build());
+    //
+    // advert.on('onAdLoaded', () => {
+    //   this.setState({modalVisible:false})
+    //   advert.show();
+    // });
 
   }
 
