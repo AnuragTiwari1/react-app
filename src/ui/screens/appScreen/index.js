@@ -1,14 +1,26 @@
 import React from 'react'
-import {View,Text,TouchableOpacity,ImageBackground,Image} from 'react-native'
+import {View,Text,TouchableOpacity,ImageBackground,Image,AsyncStorage} from 'react-native'
 import connect from "react-redux/es/connect/connect";
 import  firebase from "react-native-firebase";
+import Loader from "../../reusableComponent/Loader";
+import {TextLoader} from "../gameScreen/styles";
 class AppScreen extends React.Component{
 
   constructor(props){
-    super(props)
+    super(props);
     if(props.navigation.getParam('user')){
       props.setPhone(props.navigation.getParam('user').phoneNumber)
     }
+    // props.navigation.getParam('coins')
+    // if(props.navigation.getParam('coins')){
+       //this.rewardUser(props.navigation.getParam('coins'));
+    // }
+    if(props.rewards){
+      this.showAd();
+    }
+    this.state={
+      modalVisible: false
+    };
   }
 
 
@@ -19,7 +31,7 @@ class AppScreen extends React.Component{
         if (enabled) {
           console.log("user has permission")
         } else {
-          console.log("user don't have permission")
+          console.log("user don't have permission");
           this.askPermission();
         }
     });
@@ -48,7 +60,9 @@ class AppScreen extends React.Component{
               Play
             </Text>
           </TouchableOpacity>
-
+          <Loader showLoader={this.state.modalVisible}>
+            <TextLoader>Loading Ads</TextLoader>
+          </Loader>
           <TouchableOpacity
             style={{backgroundColor:'#38b2ee',borderRadius: 22}}
             onPress={()=> this.props.navigation.navigate("Game")}
@@ -72,6 +86,22 @@ class AppScreen extends React.Component{
       // User has rejected permissions
     }
   }
+
+  showAd(){
+    this.setState({modalVisible:true})
+    firebase.admob().initialize('ca-app-pub-2367031728958451/2842534075');
+    const advert = firebase.admob().interstitial('ca-app-pub-2367031728958451/2842534075');
+
+    const AdRequest = firebase.admob.AdRequest;
+    const request = new AdRequest();
+    advert.loadAd(request.build());
+
+    advert.on('onAdLoaded', () => {
+      this.setState({modalVisible:false})
+      advert.show();
+    });
+
+  }
 }
 export default connect(
   state =>({
@@ -82,7 +112,11 @@ export default connect(
     setPhone : phoneNumber => dispatch({
       type:"SETPHONE",
       payload:phoneNumber
-    })
+    }),
+    setPoint: point => dispatch({
+      type: "SETPOINT",
+      payload: point
+    }),
   })
 )(AppScreen)
 

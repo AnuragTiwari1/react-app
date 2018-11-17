@@ -19,6 +19,12 @@ const user = (state = initialState, action) => {
         points: action.payload
       };
 
+    case "SETREWARD":
+        console.log("setphone is called with payload",action.payload);
+          return {
+            ...state,
+            rewardPoints: action.payload
+          };
     default:
       return state;
   }

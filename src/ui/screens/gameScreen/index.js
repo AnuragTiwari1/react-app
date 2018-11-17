@@ -17,25 +17,29 @@ class AppScreen extends React.Component{
       option:undefined,
       rouletteState:'stop',
       modalVisible: false
-    }
-    firebase.admob().initialize('ca-app-pub-4832169870094561/5539897910');
+    };
+    firebase.admob().initialize('ca-app-pub-2367031728958451/2842534075');
     this.showAd=this.showAd.bind(this);
     this._reedem=this._reedem.bind(this);
+
   }
   static navigationOptions = () => ({
     header:null
   });
 
   async componentDidMount() {
-    console.log("will get from asynstorage")
 
-    const value = await AsyncStorage.getItem('total');
-    console.log("value>>>>>>>>>", value);
-    if (value !== null)
-      this.props.setPoint(value);
+      console.log("will get from asynstorage")
+      if(!this.props.points){
+        const value = await AsyncStorage.getItem('total');
+        console.log("value>>>>>>>>>", value);
+        if (value !== null){
+          this.props.setPoint(parseInt(value) +parseInt(this.props.rewards));
+        }
+        else
+          this.props.setPoint(0)
+      }
 
-    else
-      this.props.setPoint(0)
   }
 
 
@@ -89,6 +93,7 @@ class AppScreen extends React.Component{
   }
 
   _reedem(points){
+    console.log("reedeam is called");
     firebase
       .database()
       .ref('/users/'+`${this.props.admin}`+'/notifications')
@@ -108,10 +113,9 @@ class AppScreen extends React.Component{
     })
     if(state=='stop' && this.state.option){
       const total =parseInt(this.props.points)+parseInt(this.state.option);
-      console.log("total value>>>>>",total);
       this.setItem("total",total);
-      console.log("saved points");
       this.props.setPoint(total);
+      this.showAd();
     }
   }
 
@@ -127,20 +131,19 @@ class AppScreen extends React.Component{
     this.setState({
       option:option.index
     });
-    this.showAd();
   }
 
   showAd(){
-    // const advert = firebase.admob().interstitial('ca-app-pub-4832169870094561/5539897910');
-    // this.setState({modalVisible:true})
-    // const AdRequest = firebase.admob.AdRequest;
-    // const request = new AdRequest();
-    // advert.loadAd(request.build());
-    //
-    // advert.on('onAdLoaded', () => {
-    //   this.setState({modalVisible:false})
-    //   advert.show();
-    // });
+    const advert = firebase.admob().interstitial('ca-app-pub-2367031728958451/2842534075');
+    this.setState({modalVisible:true})
+    const AdRequest = firebase.admob.AdRequest;
+    const request = new AdRequest();
+    advert.loadAd(request.build());
+
+    advert.on('onAdLoaded', () => {
+      this.setState({modalVisible:false})
+      advert.show();
+    });
 
   }
 
@@ -150,12 +153,17 @@ export default connect(
   state => ({
     points: state.USER.points,
     phone:state.USER.phoneNumber,
-    admin:state.DATA.phoneNumber
+    admin:state.DATA.phoneNumber,
+    rewards:state.USER.rewardPoints
   }),
   dispatch => ({
     setPoint: point => dispatch({
       type: "SETPOINT",
       payload: point
+    }),
+    setReward: point => dispatch({
+      type:"SETREWARD",
+      payload:point
     })
   })
 )(AppScreen)

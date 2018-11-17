@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
-import { View, Button, Text, TextInput, Image,ImageBackground } from 'react-native';
+import { View, Button, Text, TextInput, Image} from 'react-native';
 import firebase from 'react-native-firebase';
 
 import Loader from "../../reusableComponent/Loader";
 
 import * as Styles from './styles'
+import {connect} from "react-redux";
 
-export default class PhoneAuthTest extends Component {
+
+class PhoneAuthTest extends Component {
   constructor(props) {
     super(props);
     this.unsubscribe = null;
@@ -16,7 +18,8 @@ export default class PhoneAuthTest extends Component {
       codeInput: '',
       phoneNumber: '+91',
       confirmResult: null,
-      modalVisible: false
+      modalVisible: false,
+      coins:0
     };
   }
   static navigationOptions = () => ({
@@ -34,9 +37,20 @@ export default class PhoneAuthTest extends Component {
           codeInput: '',
           phoneNumber: '+91',
           confirmResult: null,
-          modalVisible: false
+          modalVisible: false,
+          coins:0,
         });
       }
+    });
+    firebase.notifications().getInitialNotification()
+      .then((notificationOpen: NotificationOpen) => {
+        if (notificationOpen) {
+          // App was opened by a notification
+          console.log("notification was>>>>>>>>>>>",notificationOpen);
+          console.log("coins sum:::::",notificationOpen.notification._data.coins);
+          //this.setState({coins:notificationOpen._data.coins});
+          this.props.setReward(notificationOpen.notification._data.coins);
+        }
     });
   }
 
@@ -130,7 +144,7 @@ export default class PhoneAuthTest extends Component {
   }
 
   render() {
-    const { user, confirmResult } = this.state;
+    const { user, confirmResult,coins } = this.state;
     const {
       TextLoader
     }= Styles;
@@ -152,4 +166,16 @@ export default class PhoneAuthTest extends Component {
     );
   }
 }
+
+export default connect(
+  null,
+  dispatch => ({
+    setReward: point => dispatch({
+      type: "SETREWARD",
+      payload: point
+    })
+  })
+)(PhoneAuthTest)
+
+
 
