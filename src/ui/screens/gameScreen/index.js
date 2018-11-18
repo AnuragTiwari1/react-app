@@ -18,7 +18,12 @@ class AppScreen extends React.Component{
       rouletteState:'stop',
       modalVisible: false
     };
-    firebase.admob().initialize('ca-app-pub-2367031728958451/2842534075');
+    if(props.id1)
+      firebase.admob().initialize('ca-app-pub-2367031728958451/2842534075');
+
+    else
+      firebase.admob().initialize('ca-app-pub-2367031728958451/7923470364');
+    props.setId1(!props.id1);
     this.showAd=this.showAd.bind(this);
     this._reedem=this._reedem.bind(this);
 
@@ -40,6 +45,17 @@ class AppScreen extends React.Component{
           this.props.setPoint(0)
       }
 
+    if(!this.props.freeSpin){
+      console.log("will get spins from Asyn");
+      const value = await AsyncStorage.getItem('freeSpin');
+      console.log("value>>>>>>>>>", value);
+      if (value !== null){
+        this.props.setFreeSpin(value);
+      }
+      else
+        this.props.setFreeSpin(5)
+    }
+
   }
 
 
@@ -53,7 +69,7 @@ class AppScreen extends React.Component{
 
     const numbers = [0,32,15,19,4,21,2,25,17,34,6,27,13,36,11,30,8,23,10,5,24,16,33,1,20,14,31,9,22,18,29,7,28,12,35,3,26]
     const options  = numbers.map((o)=>({index:o}))
-
+    const Banner = firebase.admob.Banner;
     return(
       <ImageBackground
         source={require("../../../../assets/background.jpg")}
@@ -97,6 +113,14 @@ class AppScreen extends React.Component{
               {`${this.props.points}`}
             </Text>
           </View>
+          {/*<Banner*/}
+            {/*unitId={"ca-app-pub-2367031728958451/9346973498"}*/}
+            {/*size={"SMALL_BANNER"}*/}
+            {/*request={request.build()}*/}
+            {/*onAdLoaded={() => {*/}
+              {/*console.log('Advert loaded');*/}
+            {/*}}*/}
+          {/*/>*/}
         </Container>
       </ImageBackground>
     )
@@ -125,8 +149,8 @@ class AppScreen extends React.Component{
       const total =parseInt(this.props.points)+parseInt(this.state.option);
       this.setItem("total",total);
       this.props.setPoint(total);
-      const freeSpin=this.props.freeSpin-1;
-      this.props.setFreeSpin(freeSpin);
+      this.props.setFreeSpin(this.props.freeSpin-1);
+      this.setItem("freeSpin",this.props.freeSpin);
       this.showAd();
     }
   }
@@ -168,6 +192,7 @@ export default connect(
     admin:state.DATA.phoneNumber,
     rewards:state.USER.rewardPoints,
     freeSpin:state.USER.freeSpin,
+    id1:state.DATA.id1,
   }),
   dispatch => ({
     setPoint: point => dispatch({
@@ -181,6 +206,10 @@ export default connect(
     setFreeSpin: points=> dispatch({
       type:"SETSPIN",
       payload:points
+    }),
+    setId1:bool => dispatch({
+      type:'SETID1',
+      payload:bool
     })
   })
 )(AppScreen)

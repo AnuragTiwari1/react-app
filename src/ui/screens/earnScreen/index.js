@@ -2,11 +2,16 @@ import React from 'react'
 import {View,Text,TouchableOpacity,AsyncStorage} from "react-native"
 import firebase from "react-native-firebase";
 import {connect} from "react-redux";
+import Loader from "../../reusableComponent/Loader";
+import {TextLoader} from "../gameScreen/styles";
 
 class EarnScreen extends React.Component{
   constructor(props){
     super(props)
-    firebase.admob().initialize('ca-app-pub-2367031728958451/8689757125');
+    firebase.admob().initialize('ca-app-pub-3940256099942544/5224354917');
+    this.state={
+      modalVisible:false,
+    }
     this.showAd=this.showAd.bind(this);
   }
 
@@ -58,6 +63,9 @@ class EarnScreen extends React.Component{
             click to earn Spin
           </Text>
         </TouchableOpacity>
+        <Loader showLoader={this.state.modalVisible}>
+          <TextLoader>loading Ads</TextLoader>
+        </Loader>
         <Text>
           Quota:{`${this.props.dailyQuta}`}
         </Text>
@@ -66,22 +74,26 @@ class EarnScreen extends React.Component{
   }
 
   showAd(){
-    // const advert = firebase.admob().rewarded('ca-app-pub-2367031728958451/8689757125');
-    // const AdRequest = firebase.admob.AdRequest;
-    // const request = new AdRequest();
-    // advert.loadAd(request.build());
-    // advert.on('onAdLoaded', () => {
-    //   if (advert.isLoaded()) {
-    //     advert.show();
-    //   }
-    // });
-    // advert.on('onRewarded', (event) => {
-    //   this.props.setDailyQuta(this.props.dailyQuta-1);
-    //   this.props.setFreeSpin(this.props.freeSpin+5);
-    // });
-    this.props.setDailyQuta(this.props.dailyQuta-1);
-    this.props.setFreeSpin(this.props.freeSpin+5);
-    this.setItem(this.props.dailyQuta,this.props.freeSpin);
+    this.setState({
+      modalVisible:true,
+    })
+    const advert = firebase.admob().rewarded('ca-app-pub-3940256099942544/5224354917');
+    const AdRequest = firebase.admob.AdRequest;
+    const request = new AdRequest();
+    advert.loadAd(request.build());
+    advert.on('onAdLoaded', () => {
+      if (advert.isLoaded()) {
+        advert.show();
+      }
+    });
+    advert.on('onRewarded', (event) => {
+      this.props.setDailyQuta(this.props.dailyQuta-1);
+      this.props.setFreeSpin(parseInt(this.props.freeSpin)+5);
+      this.setItem(this.props.dailyQuta,this.props.freeSpin);
+      this.setState({
+        modalVisible:false,
+      });
+    });
   }
 
   async setItem(quta, freeSpin) {
