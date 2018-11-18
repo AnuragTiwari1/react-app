@@ -10,10 +10,11 @@ const RootStack =createStackNavigator(
    AppScreen:AppScreen,
     Game:GameScreen,
     EarnSpin:EarnScreen,
+    // FAQ:faqScreen
   },
   {
     initialRouteName: 'Home',
   }
-)
+);
 
 export default RootStack

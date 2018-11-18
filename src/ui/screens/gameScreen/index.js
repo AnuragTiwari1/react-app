@@ -10,7 +10,7 @@ import {connect} from "react-redux";
 import NextTitle from "../../reusableComponent/NextTitle";
 class AppScreen extends React.Component{
   constructor(props){
-    super(props)
+    super(props);
     this.onRotate = this.onRotate.bind(this);
     this.onRotateChange = this.onRotateChange.bind(this);
     this.state={
@@ -84,7 +84,7 @@ class AppScreen extends React.Component{
           marker={marker}
           options={options}
           markerWidth={20}
-          enableUserRotate = {this.props.freeSpin} >
+          enableUserRotate = {this.props.freeSpin>0} >
           </Roulette>
           <Loader showLoader={this.state.modalVisible}>
             <TextLoader>Loading Ads</TextLoader>
@@ -113,14 +113,6 @@ class AppScreen extends React.Component{
               {`${this.props.points}`}
             </Text>
           </View>
-          {/*<Banner*/}
-            {/*unitId={"ca-app-pub-2367031728958451/9346973498"}*/}
-            {/*size={"SMALL_BANNER"}*/}
-            {/*request={request.build()}*/}
-            {/*onAdLoaded={() => {*/}
-              {/*console.log('Advert loaded');*/}
-            {/*}}*/}
-          {/*/>*/}
         </Container>
       </ImageBackground>
     )

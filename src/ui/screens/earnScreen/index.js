@@ -8,7 +8,7 @@ import {TextLoader} from "../gameScreen/styles";
 class EarnScreen extends React.Component{
   constructor(props){
     super(props)
-    firebase.admob().initialize('ca-app-pub-3940256099942544/5224354917');
+    firebase.admob().initialize('ca-app-pub-2367031728958451/8689757125');
     this.state={
       modalVisible:false,
     }
@@ -77,7 +77,7 @@ class EarnScreen extends React.Component{
     this.setState({
       modalVisible:true,
     })
-    const advert = firebase.admob().rewarded('ca-app-pub-3940256099942544/5224354917');
+    const advert = firebase.admob().rewarded('ca-app-pub-2367031728958451/8689757125');
     const AdRequest = firebase.admob.AdRequest;
     const request = new AdRequest();
     advert.loadAd(request.build());
