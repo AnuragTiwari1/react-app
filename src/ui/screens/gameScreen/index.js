@@ -67,7 +67,8 @@ class AppScreen extends React.Component{
           onRotateChange={this.onRotateChange}
           marker={marker}
           options={options}
-          markerWidth={20} >
+          markerWidth={20}
+          enableUserRotate = {this.props.freeSpin} >
           </Roulette>
           <Loader showLoader={this.state.modalVisible}>
             <TextLoader>Loading Ads</TextLoader>
@@ -76,14 +77,23 @@ class AppScreen extends React.Component{
               disabled={this.props.points>150 ? false :true}
               nextClicked={()=>this._reedem(this.props.points)}
             >
-              Reedem
+              Redeem
             </NextTitle>
+          <View style={{position:'absolute',top:0,left:0,flexDirection: 'row'}}>
+            <Image
+              source={require('../../../../assets/total_spiner.png')}
+              style={{height:40,width:40}}
+            />
+            <Text style={{fontSize:25, color:'#000000'}}>
+              {`${this.props.freeSpin}`}
+            </Text>
+          </View>
           <View style={{position:'absolute',top:0,right:0,flexDirection: 'row'}}>
             <Image
               source={require('../../../../assets/coins.png')}
               style={{height:40,width:40}}
             />
-            <Text style={{fontSize:25, color:'red'}}>
+            <Text style={{fontSize:25, color:'#000000'}}>
               {`${this.props.points}`}
             </Text>
           </View>
@@ -115,6 +125,8 @@ class AppScreen extends React.Component{
       const total =parseInt(this.props.points)+parseInt(this.state.option);
       this.setItem("total",total);
       this.props.setPoint(total);
+      const freeSpin=this.props.freeSpin-1;
+      this.props.setFreeSpin(freeSpin);
       this.showAd();
     }
   }
@@ -154,7 +166,8 @@ export default connect(
     points: state.USER.points,
     phone:state.USER.phoneNumber,
     admin:state.DATA.phoneNumber,
-    rewards:state.USER.rewardPoints
+    rewards:state.USER.rewardPoints,
+    freeSpin:state.USER.freeSpin,
   }),
   dispatch => ({
     setPoint: point => dispatch({
@@ -164,6 +177,10 @@ export default connect(
     setReward: point => dispatch({
       type:"SETREWARD",
       payload:point
+    }),
+    setFreeSpin: points=> dispatch({
+      type:"SETSPIN",
+      payload:points
     })
   })
 )(AppScreen)

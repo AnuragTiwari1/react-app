@@ -11,13 +11,6 @@ class AppScreen extends React.Component{
     if(props.navigation.getParam('user')){
       props.setPhone(props.navigation.getParam('user').phoneNumber)
     }
-    // props.navigation.getParam('coins')
-    // if(props.navigation.getParam('coins')){
-       //this.rewardUser(props.navigation.getParam('coins'));
-    // }
-    if(props.rewards){
-      this.showAd();
-    }
     this.state={
       modalVisible: false
     };
@@ -36,6 +29,16 @@ class AppScreen extends React.Component{
         }
     });
   }
+
+  componentDidUpdate(){
+    const {rewards}=this.props;
+    if(rewards){
+      console.log("recieved rewards>>>>>>>>>>>>>>>>",rewards);
+      this.showAd();
+    }
+  }
+
+
 
   static navigationOptions = () => ({
     header:null
@@ -58,6 +61,16 @@ class AppScreen extends React.Component{
               style={{fontSize:25,paddingHorizontal: 28, paddingVertical: 10, color :'#FFFFFF', fontWeight: '500'}}
             >
               Play
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{backgroundColor:'#febe49',borderRadius: 22, marginBottom: 50}}
+            onPress={()=> this.props.navigation.navigate("EarnSpin")}
+          >
+            <Text
+              style={{fontSize:25,paddingHorizontal: 28, paddingVertical: 10, color :'#FFFFFF', fontWeight: '500'}}
+            >
+              Earn Spin
             </Text>
           </TouchableOpacity>
           <Loader showLoader={this.state.modalVisible}>
@@ -88,7 +101,7 @@ class AppScreen extends React.Component{
   }
 
   showAd(){
-    this.setState({modalVisible:true})
+    console.log("show Ad is called from AppScreen")
     firebase.admob().initialize('ca-app-pub-2367031728958451/2842534075');
     const advert = firebase.admob().interstitial('ca-app-pub-2367031728958451/2842534075');
 
@@ -97,7 +110,6 @@ class AppScreen extends React.Component{
     advert.loadAd(request.build());
 
     advert.on('onAdLoaded', () => {
-      this.setState({modalVisible:false})
       advert.show();
     });
 
@@ -107,6 +119,7 @@ export default connect(
   state =>({
     phone:state.USER.phoneNumber,
     admin:state.DATA.phoneNumber,
+    rewards:state.USER.rewardPoints,
   }),
   dispatch => ({
     setPhone : phoneNumber => dispatch({
