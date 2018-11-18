@@ -10,6 +10,10 @@ class EarnScreen extends React.Component{
     this.showAd=this.showAd.bind(this);
   }
 
+  static navigationOptions = () => ({
+    header:null
+  });
+
   async componentDidMount() {
     const date = await AsyncStorage.getItem('date');
     console.log("date from Async>>>>>",date);
@@ -42,17 +46,20 @@ class EarnScreen extends React.Component{
 
   render(){
     return(
-      <View>
+      <View style={{flex:1, backgroundColor:"white"}}>
         <TouchableOpacity
           onPress={()=>this.showAd()}
           disabled={!this.props.dailyQuta}
+          style={{top:'50%',backgroundColor:"orange",marginLeft:50,marginRight: 50}}
         >
-          <Text>
+          <Text
+            style={{color:"white",alignSelf: 'center'}}
+          >
             click to earn Spin
           </Text>
         </TouchableOpacity>
         <Text>
-          {`${this.props.dailyQuta}`}
+          Quota:{`${this.props.dailyQuta}`}
         </Text>
       </View>
     );
