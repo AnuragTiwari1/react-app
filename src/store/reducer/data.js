@@ -1,14 +1,15 @@
 const initialState = {
   phoneNumber:'+919607155846',
-  notice:{}
+  notice:{},
+  dailyQuta: 0
 };
 
 const data = (state = initialState, action) => {
   switch (action.type) {
-    case "SETNOTICE":
+    case "SETQUTA":
       return {
         ...state,
-        notice: action.payload
+        dailyQuta: action.payload
       };
     default:
       return state;
