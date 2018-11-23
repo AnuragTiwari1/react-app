@@ -14,15 +14,24 @@ class AppScreen extends React.Component{
     this.onRotate = this.onRotate.bind(this);
     this.onRotateChange = this.onRotateChange.bind(this);
     this.state={
+      id:"",
       option:undefined,
       rouletteState:'stop',
       modalVisible: false
     };
-    if(props.id1)
-      firebase.admob().initialize('ca-app-pub-2367031728958451/2842534075');
+    // if(props.id1){
+    //   firebase.admob().initialize('ca-app-pub-3940256099942544/1033173712');
+    //   this.setState({id:'ca-app-pub-3940256099942544/1033173712'})
+    // }
+    //
+    //
+    // else{
+    //   firebase.admob().initialize('ca-app-pub-3940256099942544/1033173712');
+    //   this.setState({id:'ca-app-pub-3940256099942544/1033173712'})
+    // }
 
-    else
-      firebase.admob().initialize('ca-app-pub-2367031728958451/7923470364');
+    firebase.admob().initialize('ca-app-pub-3940256099942544/1033173712');
+
     props.setId1(!props.id1);
     this.showAd=this.showAd.bind(this);
     this._reedem=this._reedem.bind(this);
@@ -162,7 +171,7 @@ class AppScreen extends React.Component{
   }
 
   showAd(){
-    const advert = firebase.admob().interstitial('ca-app-pub-2367031728958451/2842534075');
+    const advert = firebase.admob().interstitial('ca-app-pub-3940256099942544/1033173712');
     this.setState({modalVisible:true})
     const AdRequest = firebase.admob.AdRequest;
     const request = new AdRequest();

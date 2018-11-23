@@ -70,7 +70,7 @@ class AppScreen extends React.Component{
             <Text
               style={{fontSize:25,paddingHorizontal: 28, paddingVertical: 10, color :'#FFFFFF', fontWeight: '500'}}
             >
-              Earn Spin
+              Earn More Spin
             </Text>
           </TouchableOpacity>
           <Loader showLoader={this.state.modalVisible}>
@@ -78,7 +78,7 @@ class AppScreen extends React.Component{
           </Loader>
           <TouchableOpacity
             style={{backgroundColor:'#38b2ee',borderRadius: 22}}
-            onPress={()=> this.props.navigation.navigate("Game")}
+            onPress={()=> this.props.navigation.navigate("FAQ")}
           >
             <Text
               style={{fontSize:25,paddingHorizontal: 28, paddingVertical: 10, color :'#FFFFFF', fontWeight: '500'}}
@@ -102,8 +102,8 @@ class AppScreen extends React.Component{
 
   showAd(){
     console.log("show Ad is called from AppScreen")
-    firebase.admob().initialize('ca-app-pub-2367031728958451/2842534075');
-    const advert = firebase.admob().interstitial('ca-app-pub-2367031728958451/2842534075');
+    firebase.admob().initialize('ca-app-pub-3940256099942544/1033173712');
+    const advert = firebase.admob().interstitial('ca-app-pub-3940256099942544/1033173712');
 
     const AdRequest = firebase.admob.AdRequest;
     const request = new AdRequest();

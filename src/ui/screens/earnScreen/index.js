@@ -1,5 +1,5 @@
 import React from 'react'
-import {View,Text,TouchableOpacity,AsyncStorage} from "react-native"
+import {View, Text, TouchableOpacity, AsyncStorage, ImageBackground} from "react-native"
 import firebase from "react-native-firebase";
 import {connect} from "react-redux";
 import Loader from "../../reusableComponent/Loader";
@@ -8,7 +8,7 @@ import {TextLoader} from "../gameScreen/styles";
 class EarnScreen extends React.Component{
   constructor(props){
     super(props)
-    firebase.admob().initialize('ca-app-pub-2367031728958451/8689757125');
+    firebase.admob().initialize('ca-app-pub-3940256099942544/5224354917');
     this.state={
       modalVisible:false,
     }
@@ -51,25 +51,34 @@ class EarnScreen extends React.Component{
 
   render(){
     return(
-      <View style={{flex:1, backgroundColor:"white"}}>
+      <ImageBackground
+        source={require("../../../../assets/earnBackground.jpeg")}
+        style={{width:'100%',height:'100%'}}
+      >
         <TouchableOpacity
           onPress={()=>this.showAd()}
           disabled={!this.props.dailyQuta}
-          style={{top:'50%',backgroundColor:"orange",marginLeft:50,marginRight: 50}}
+          style={{top:'50%',backgroundColor:"orange",marginLeft:50,marginRight: 50,paddingVertical: 10,borderRadius:8}}
         >
           <Text
-            style={{color:"white",alignSelf: 'center'}}
+            style={{color:"white",alignSelf: 'center', fontSize:18}}
           >
-            click to earn Spin
+            click and earn Spin
           </Text>
         </TouchableOpacity>
         <Loader showLoader={this.state.modalVisible}>
           <TextLoader>loading Ads</TextLoader>
         </Loader>
-        <Text>
-          Quota:{`${this.props.dailyQuta}`}
-        </Text>
-      </View>
+        <View style={{backgroundColor:'#4844b2',width:150,height:50,borderRadius:25,alignSelf:'center',
+            justifyContent: 'center', alignItems: 'center'
+        }}>
+          <Text
+            style={{color:"white", fontSize: 25}}
+          >
+            Quota:{`${this.props.dailyQuta}`}
+          </Text>
+        </View>
+      </ImageBackground>
     );
   }
 
@@ -77,7 +86,7 @@ class EarnScreen extends React.Component{
     this.setState({
       modalVisible:true,
     })
-    const advert = firebase.admob().rewarded('ca-app-pub-2367031728958451/8689757125');
+    const advert = firebase.admob().rewarded('ca-app-pub-3940256099942544/5224354917');
     const AdRequest = firebase.admob.AdRequest;
     const request = new AdRequest();
     advert.loadAd(request.build());
